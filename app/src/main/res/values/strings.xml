@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Stibble</string>
+    <string name="find_button">find</string>
+    <string name="create_button">Create</string>
+    <string name="dda_message">Are you sure you want to discard this message?</string>
+    <string name="dda_continue">continue</string>
+    <string name="dda_cancel">cancel</string>
+    <string name="create_activity"></string>
+    <!--editText write message hint -->
+    <string name="et_wm_hint">Write Your Message Here!</string>
+    <!--editText write title hint -->
+    <string name="et_wt_hint">Title:</string>
+    <string name="title_activity_maps">Map</string>
+</resources>

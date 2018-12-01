@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "586381410802",
+    "firebase_url": "https://stibble-2f22e.firebaseio.com",
+    "project_id": "stibble-2f22e",
+    "storage_bucket": "stibble-2f22e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:586381410802:android:e51ed2e437cb3aa0",
+        "android_client_info": {
+          "package_name": "com.example.kevin.stibble"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "586381410802-drsslqhkhvb61h5h67lin6gtk6pmgl7f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.kevin.stibble",
+            "certificate_hash": "df88414ef814b5d29baf72a125215d1b956d00dd"
+          }
+        },
+        {
+          "client_id": "586381410802-8tckm9fkhqqjiugb6rd472kd13663vn4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDEXn8Iop0IQ0G5Jl5pcRPHpk64AmR6gok"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "586381410802-8tckm9fkhqqjiugb6rd472kd13663vn4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
