@@ -12,7 +12,13 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -33,11 +39,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     //constants
+    /*
+    TODO: add key parameter to stbbleMessage class && store it to be able to update rating using JSON query
+    */
     public final String TAG = "MapsActivity";
     public static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     public static final String COURSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
@@ -67,9 +77,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 //get all database messages
                 /*NOTE: should be an asynctask*/
                 stibbleMessage addedMessage = dataSnapshot.getValue(stibbleMessage.class);
+                String str = dataSnapshot.getKey();
+                Log.d("temp", str);
                 LatLng mlatlng = new LatLng(addedMessage != null ? addedMessage.getLatitude() : 0, addedMessage != null ? addedMessage.getLongtitude() : 0);
-                MarkerOptions options = new MarkerOptions().position(mlatlng).title(addedMessage != null ? addedMessage.getTitle() : null).snippet(addedMessage != null ? addedMessage.getMessage() : null);
-                mMap.addMarker(options);
+                MarkerOptions options = new MarkerOptions()
+                        .position(mlatlng)
+                        .title(addedMessage != null ? addedMessage.getTitle() : null)
+                        .snippet(addedMessage != null ? addedMessage.getMessage() : null);
+                mMap.addMarker(options).setTag(addedMessage);
                 Log.d(TAG, "onCreate:onChildAdded: Finish");
             }
 
@@ -163,14 +178,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
             mMap.setMyLocationEnabled(true);
            mapsActivityDatabaseRef.addChildEventListener(mapsActivityDatabaseLis);
-           mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-                @Override
-                public boolean onMarkerClick(Marker marker) {
-                    Toast.makeText(MapsActivity.this, "CLICK", Toast.LENGTH_SHORT).show();
-                    mMap.setInfoWindowAdapter(new CustomMessageWindowAdapter(MapsActivity.this));
-                    return false;
-                }
-            });
+            mMap.setOnMarkerClickListener(this);
         }
         Log.d(TAG, "onMapReady: finish");
     }
@@ -244,7 +252,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         Log.d(TAG, "getDeviceLocation: finish");
     }
-
     //method to move camera to a specific location
     public void moveCamera(LatLng latLng, float zoom )
     {
@@ -252,5 +259,50 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //add log.d message to notify where camera is moving to
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
         Log.d(TAG, "moveCamera: finish");
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        stibbleMessage markerStibble = (stibbleMessage)marker.getTag();
+        if(markerStibble == null)
+        {
+            Log.d("unik", "null object");
+        }
+        else
+        {
+            Log.d("unik", "not null object");
+            Log.d("unik", markerStibble.getTitle());
+            Log.d("unik", markerStibble.getMessage());
+        }
+        String title = markerStibble.getTitle();
+        String message = markerStibble.getMessage();
+        Toast.makeText(MapsActivity.this, "CLICK", Toast.LENGTH_SHORT).show();
+        //inflate the layout of the popup window
+        LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        final View ppView = inflater.inflate(R.layout.popup_window, null);
+
+        //create the popup window
+        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+        //lets taps outside the popup also dismiss it
+        boolean outsideTap = false;
+        final PopupWindow ppWindow = new PopupWindow(ppView, width, height, outsideTap);
+        //----
+        //set title
+        TextView ppTitle = (TextView)ppView.findViewById(R.id.popup_title);
+        ppTitle.setText(title);
+        //set message
+        TextView ppMessage = (TextView)ppView.findViewById(R.id.popup_message);
+        ppMessage.setText(message);
+        //show the popup window
+        ppWindow.showAtLocation(ppView, Gravity.CENTER, 0, 0);
+        Button closePopup = (Button) ppView.findViewById(R.id.close_popup);
+        closePopup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ppWindow.dismiss();
+            }
+        });
+        return false;
     }
 }

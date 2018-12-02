@@ -8,15 +8,27 @@ import android.widget.TextView;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 
+import java.util.List;
+
 public class CustomMessageWindowAdapter implements GoogleMap.InfoWindowAdapter{
 
     private final View myWindow;
-    private Context myContext;
 
     public  CustomMessageWindowAdapter(Context context)
     {
-        myContext = context;
         myWindow = LayoutInflater.from(context).inflate(R.layout.stibble_window, null);
+    }
+
+    @Override
+    public View getInfoWindow(Marker marker) {
+        rendoWindoText(marker, myWindow);
+        return myWindow;
+    }
+
+    @Override
+    public View getInfoContents(Marker marker) {
+        rendoWindoText(marker, myWindow);
+        return myWindow;
     }
     private void rendoWindoText(Marker marker, View view)
     {
@@ -32,16 +44,9 @@ public class CustomMessageWindowAdapter implements GoogleMap.InfoWindowAdapter{
         {
             tvSnippet.setText(snippet);
         }
-    }
-    @Override
-    public View getInfoWindow(Marker marker) {
-        rendoWindoText(marker, myWindow);
-        return myWindow;
-    }
-
-    @Override
-    public View getInfoContents(Marker marker) {
-        rendoWindoText(marker, myWindow);
-        return myWindow;
+        stibbleMessage temp = (stibbleMessage)marker.getTag();
+        int rating = (int) (temp != null ? temp.getRating() : 0);
+        TextView tvRating = (TextView) view.findViewById(R.id.stibblRating);
+        tvRating.setText(""+rating);
     }
 }
