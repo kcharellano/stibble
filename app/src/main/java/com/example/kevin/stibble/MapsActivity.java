@@ -44,7 +44,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.LongToIntFunction;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener{
 
     //constants
     public final String TAG = "MapsActivity";
@@ -54,6 +54,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public static final float DEFAULT_ZOOM = 10;
     //variables
     public boolean myLocationPermissionGranted = false;
+    public Location holdLocation;
     private GoogleMap mMap;
     public FusedLocationProviderClient myFusedLocationProviderClient;
     DatabaseReference mapsActivityDatabaseRef;
@@ -174,7 +175,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Toast.makeText(this, "Map is Ready", Toast.LENGTH_SHORT).show();
         mMap = googleMap;
         if (myLocationPermissionGranted) {
-            getDeviceLocation();
+            getDeviceLocation(new LocationCallback() {
+                @Override
+                public void onLocation(Location location) {
+                    holdLocation = location;
+                }
+            });
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                     != PackageManager.PERMISSION_GRANTED &&
                     ActivityCompat.checkSelfPermission
@@ -215,7 +221,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     //gets device location and moves camera to current location
-    public void getDeviceLocation()
+    public void getDeviceLocation(final LocationCallback callback)
     {
         Log.d(TAG, "getDeviceLocation: start");
         //get location
@@ -235,6 +241,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             //move camera to location
                             if (curLocation != null) {
                                 moveCamera(new LatLng(curLocation.getLatitude(), curLocation.getLongitude()), DEFAULT_ZOOM);
+                                callback.onLocation(curLocation);
                             }
                             else
                             {
@@ -343,4 +350,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return false;
     }
 
+    public void showLocation(View view) {
+        Geocoder geocoder = new Geocoder(this);
+        List<Address> addressList = null;
+        try {
+            addressList = geocoder.getFromLocation(holdLocation.getLatitude(), holdLocation.getLongitude(), 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Address holdAddress = addressList != null ? addressList.get(0) : null;
+        Toast.makeText(this, holdAddress != null ? holdAddress.toString() : null, Toast.LENGTH_SHORT).show();
+    }
 }

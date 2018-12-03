@@ -93,10 +93,6 @@ public class GetLocationTask extends AsyncTask<Activity, Void, Void> {
             Log.e(TAG, "returnDeviceAddress: SecurityException: " + e.getMessage());
         }
     }
-
-
-
-
     public void getLocationPermission(Context context, Activity act)
     {
         Log.d(TAG, "getLocationPermission: start");
