@@ -9,6 +9,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/close_popup"
+        android:layout_gravity="end"
+        android:onClick="doStuff2"
         android:text="close"
         />
     <TextView
@@ -27,4 +29,30 @@
         android:textSize="14sp"
         android:textColor="#000"
         android:text="BODY"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/popup_rating"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:layout_gravity="end"
+        android:textColor="#000"
+        android:text="Rate"/>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/popup_downrating"
+            android:text="-"
+            />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/popup_uprating"
+            android:text="+"
+            />
+    </LinearLayout>
 </LinearLayout>

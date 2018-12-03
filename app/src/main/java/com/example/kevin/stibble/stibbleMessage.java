@@ -1,10 +1,8 @@
 package com.example.kevin.stibble;
 
-import android.location.Address;
-
 public class stibbleMessage
 {
-    private String title, message;
+    private String title, message, key;
     private String address, city, state, country, postalCode;
     private double latitude, longitude;
     private long rating;
@@ -101,5 +99,21 @@ public class stibbleMessage
 
     public void setPostalCode(String postalCode) {
         this.postalCode = postalCode;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+    public void incrementRating()
+    {
+        this.rating = this.rating + 1;
+    }
+    public void decrementRating()
+    {
+        this.rating = this.rating - 1;
     }
 }

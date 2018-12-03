@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.TextClock;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,13 +42,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.LongToIntFunction;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     //constants
-    /*
-    TODO: add key parameter to stbbleMessage class && store it to be able to update rating using JSON query
-    */
     public final String TAG = "MapsActivity";
     public static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     public static final String COURSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
@@ -73,39 +72,46 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Log.d(TAG, "onCreate:onChildAdded: start");
                 //gets called whenever a new message is added to the list
                 //also triggered when a child listener is detached
-                /*temp off for demo*/
                 //get all database messages
                 /*NOTE: should be an asynctask*/
                 stibbleMessage addedMessage = dataSnapshot.getValue(stibbleMessage.class);
-                String str = dataSnapshot.getKey();
-                Log.d("temp", str);
-                LatLng mlatlng = new LatLng(addedMessage != null ? addedMessage.getLatitude() : 0, addedMessage != null ? addedMessage.getLongtitude() : 0);
-                MarkerOptions options = new MarkerOptions()
-                        .position(mlatlng)
-                        .title(addedMessage != null ? addedMessage.getTitle() : null)
-                        .snippet(addedMessage != null ? addedMessage.getMessage() : null);
-                mMap.addMarker(options).setTag(addedMessage);
-                Log.d(TAG, "onCreate:onChildAdded: Finish");
+                if(addedMessage!= null) {
+                    String str = dataSnapshot.getKey();
+                    addedMessage.setKey(str);
+                    Log.d("temp", str);
+                    LatLng mlatlng = new LatLng(addedMessage.getLatitude(), addedMessage.getLongtitude());
+                    MarkerOptions options = new MarkerOptions()
+                            .position(mlatlng)
+                            .title(addedMessage.getTitle())
+                            .snippet(addedMessage.getMessage());
+                    mMap.addMarker(options).setTag(addedMessage);
+                    Log.d(TAG, "onCreate:onChildAdded: Finish");
+                }
+                else
+                {
+                    Log.d(TAG, "onCreate:onChildAdded: something went wrong");
+
+                }
             }
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
+                Log.d("dbRef", "onChildChanges");
             }
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
+                Log.d("dbRef", "onChildRemoved");
             }
 
             @Override
             public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
+                Log.d("dbRef", "onChildMoved");
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Log.d("dbRef", "onCancelled");
             }
         };
     }
@@ -262,47 +268,79 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     @Override
-    public boolean onMarkerClick(Marker marker) {
-        stibbleMessage markerStibble = (stibbleMessage)marker.getTag();
-        if(markerStibble == null)
-        {
-            Log.d("unik", "null object");
-        }
-        else
-        {
-            Log.d("unik", "not null object");
-            Log.d("unik", markerStibble.getTitle());
-            Log.d("unik", markerStibble.getMessage());
-        }
-        String title = markerStibble.getTitle();
-        String message = markerStibble.getMessage();
-        Toast.makeText(MapsActivity.this, "CLICK", Toast.LENGTH_SHORT).show();
-        //inflate the layout of the popup window
-        LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-        final View ppView = inflater.inflate(R.layout.popup_window, null);
-
-        //create the popup window
-        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
-        //lets taps outside the popup also dismiss it
-        boolean outsideTap = false;
-        final PopupWindow ppWindow = new PopupWindow(ppView, width, height, outsideTap);
-        //----
-        //set title
-        TextView ppTitle = (TextView)ppView.findViewById(R.id.popup_title);
-        ppTitle.setText(title);
-        //set message
-        TextView ppMessage = (TextView)ppView.findViewById(R.id.popup_message);
-        ppMessage.setText(message);
-        //show the popup window
-        ppWindow.showAtLocation(ppView, Gravity.CENTER, 0, 0);
-        Button closePopup = (Button) ppView.findViewById(R.id.close_popup);
-        closePopup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ppWindow.dismiss();
+    public boolean onMarkerClick(final Marker marker) {
+        final stibbleMessage markerStibble = (stibbleMessage) marker.getTag();
+        if (markerStibble != null) {
+            String title = markerStibble.getTitle();
+            String message = markerStibble.getMessage();
+            final Long longRating = markerStibble.getRating();
+            String rating = longRating.toString();
+            Toast.makeText(MapsActivity.this, "CLICK", Toast.LENGTH_SHORT).show();
+            //create inflater for popup layout
+            LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+            if(inflater!=null) {
+                //inflate the layout of the popup window
+                final View ppView = inflater.inflate(R.layout.popup_window, null);
+                //create the popup window
+                //taps outside popup will close window
+                int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+                int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+                final PopupWindow ppWindow = new PopupWindow(ppView, width, height, true);
+                //set title
+                TextView ppTitle = (TextView) ppView.findViewById(R.id.popup_title);
+                ppTitle.setText(title);
+                //set message
+                TextView ppMessage = (TextView) ppView.findViewById(R.id.popup_message);
+                ppMessage.setText(message);
+                //set rating
+                final TextView ppRating = (TextView) ppView.findViewById(R.id.popup_rating);
+                ppRating.setText(rating);
+                //set buttons
+                Button closePopup = (Button) ppView.findViewById(R.id.close_popup);
+                Button incRating = (Button) ppView.findViewById(R.id.popup_uprating);
+                Button decRating = (Button) ppView.findViewById(R.id.popup_downrating);
+                //show the popup window
+                ppWindow.showAtLocation(ppView, Gravity.CENTER, 0, 0);
+                //button listeners
+                closePopup.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ppWindow.dismiss();
+                    }
+                });
+                incRating.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //increment stibble object rating
+                        markerStibble.incrementRating();
+                        //update rating in database
+                        mapsActivityDatabaseRef.child(markerStibble.getKey()).child("rating").setValue(markerStibble.getRating());
+                        //update textview
+                        Long L_rating = markerStibble.getRating();
+                        String S_rating = L_rating.toString();
+                        ppRating.setText(S_rating);
+                        //update marker setTag() object
+                        marker.setTag(markerStibble);
+                    }
+                });
+                decRating.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //decrement stibble object rating
+                        markerStibble.decrementRating();
+                        //update rating in database
+                        mapsActivityDatabaseRef.child(markerStibble.getKey()).child("rating").setValue(markerStibble.getRating());
+                        //update textview
+                        Long L_rating = markerStibble.getRating();
+                        String S_rating = L_rating.toString();
+                        ppRating.setText(S_rating);
+                        //update marker setTag() object
+                        marker.setTag(markerStibble);
+                    }
+                });
             }
-        });
+        }
         return false;
     }
+
 }
