@@ -37,6 +37,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -101,6 +102,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     Marker marker = mMap.addMarker(options);
                     //add object to marker
                     marker.setTag(addedMessage);
+                    marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.finalicon));
                     //appends to markerLinkedList
                     markerLinkedList.add(marker);
                     //mMap.addMarker(options).setTag(addedMessage);
@@ -260,6 +262,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 return;
             }
             mMap.setMyLocationEnabled(true);
+            mMap.getUiSettings().setMapToolbarEnabled(false);
+            mMap.getUiSettings().setCompassEnabled(false);
+            mMap.getUiSettings();
             myFusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null);
             Log.d("Loc2", "requested");
             mapsActivityDatabaseRef.addChildEventListener(mapsActivityDatabaseLis);
@@ -434,10 +439,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-    public void showLocation(View view) {
-        double lat = holdLocation.getLatitude();
-        double lon = holdLocation.getLongitude();
-        Toast.makeText(this, "latitude = "+lat+"\n"+"longitude = "+lon, Toast.LENGTH_LONG).show();
-    }
+
 
 }
