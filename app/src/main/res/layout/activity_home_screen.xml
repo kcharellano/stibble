@@ -4,24 +4,80 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
+    android:background="@drawable/activity"
     android:orientation="vertical"
     tools:context=".HomeScreenActivity">
 
-    <Button
-        android:id="@+id/find_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="100dp"
-        android:text="@string/find_button" />
 
-    <Button
-        android:id="@+id/create_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:layout_gravity="center"
-        android:text="@string/create_button"
-         />
+    //android:background="#449ECC"
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <!---
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="26dp"
+            android:gravity="center"
+            android:text="Stibble"
+            android:textColor="#ffffff"
+            android:textSize="30sp"
+            android:textStyle="italic" />
+            -->
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="159dp"
+            android:layout_height="149dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="113dp"
+            android:layout_marginTop="44dp"
+            android:background="@drawable/round_button"
+            android:foregroundGravity="center"
+            android:gravity="center"
+            app:srcCompat="@drawable/logo" />
+
+
+        <Button
+            android:id="@+id/find_button"
+            android:layout_width="257dp"
+            android:layout_height="59dp"
+            android:layout_alignParentStart="true"
+            android:layout_gravity="center"
+            android:layout_marginStart="59dp"
+            android:layout_marginTop="360dp"
+            android:background="@drawable/round_button"
+            android:drawableLeft="@drawable/ic_action_find2"
+            android:onClick="perform_action"
+            android:text="Discover"
+            android:textColor="#ffffff"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+
+
+        <Button
+            android:id="@+id/create_button"
+            android:layout_width="257dp"
+            android:layout_height="59dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="center"
+            android:layout_marginStart="59dp"
+            android:layout_marginTop="420dp"
+            android:layout_marginBottom="34dp"
+            android:background="@drawable/round_button"
+            android:drawableLeft="@drawable/ic_action_find"
+            android:onClick="perform_action"
+            android:text="@string/create_button"
+            android:textColor="#ffffff"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
 
 </android.widget.LinearLayout>

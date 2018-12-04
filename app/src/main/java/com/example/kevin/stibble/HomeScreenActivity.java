@@ -4,6 +4,8 @@ import android.Manifest;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -45,6 +47,8 @@ public class HomeScreenActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
+        perform_action(findBtn);
+        perform_action(createBtn);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         HomeActivityDatabaseRef = FirebaseDatabase.getInstance().getReference(); /* */
         if (isServicesOk()) {
@@ -139,6 +143,15 @@ public class HomeScreenActivity extends AppCompatActivity {
                 startActivity(anotherIntent);
             }
         });
+    }
+    public void perform_action(View v){
+        Button btn = (Button) findViewById(R.id.find_button);
+        Button btn2 = (Button) findViewById(R.id.create_button);
+        int[] colors = {Color.parseColor("#614385"), Color.parseColor("#516395")};
+        GradientDrawable gd = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, colors);
+        gd.setCornerRadius(25f);
+        btn.setBackground(gd);
+        btn2.setBackground(gd);
     }
 
 }

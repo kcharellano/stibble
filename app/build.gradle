@@ -32,6 +32,9 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation 'com.google.firebase:firebase-database:16.0.4'
     implementation 'com.google.firebase:firebase-core:16.0.4'
+
+    //Animation Library
+    implementation 'com.github.aarsy.googlemapsanimations:googlemapsanimations:1.0.5'
 }
 // ADD THIS AT THE BOTTOM
 apply plugin: 'com.google.gms.google-services'

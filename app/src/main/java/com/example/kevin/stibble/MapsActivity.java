@@ -2,6 +2,7 @@ package com.example.kevin.stibble;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -24,6 +25,7 @@ import android.widget.TextClock;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.arsy.maps_library.MapRipple;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationAvailability;
 import com.google.android.gms.location.LocationCallback;
@@ -60,6 +62,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public static final int LOCATION_PERMISSION_REQUEST_CODE = 123;
     public static final float DEFAULT_ZOOM = 18.85f;
     //variables
+    boolean mapRippleFlag;
+    MapRipple mapRipple;
     public boolean myLocationPermissionGranted = false;
     public Location holdLocation;
     private GoogleMap mMap;
@@ -138,6 +142,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     protected void onStart() {
         super.onStart();
+        mapRippleFlag = false;
         markerLinkedList = new LinkedList<Marker>();
         locationRequest = new LocationRequest();
         locationRequest.setInterval(2000);
@@ -151,6 +156,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 //String k = "latitude = "+holdLocation.getLatitude()+"\n longitude = "+holdLocation.getLongitude();
                 //Toast.makeText(MapsActivity.this, k, Toast.LENGTH_SHORT).show();
 
+                if(!mapRippleFlag)
+                {
+                    LatLng latLng = new LatLng(holdLocation.getLatitude(), holdLocation.getLongitude());
+                    mapRipple = new MapRipple(mMap, latLng, MapsActivity.this);
+                    mapRipple.withNumberOfRipples(3);
+                    mapRipple.withFillColor(ContextCompat.getColor(MapsActivity.this, R.color.darkGreen));
+                    mapRipple.withStrokeColor(Color.BLACK);
+                    mapRipple.withStrokewidth(5);
+                    mapRipple.withDistance(150);
+                    mapRipple.withRippleDuration(6000);
+                    mapRipple.withTransparency(0.3f);
+                    mapRipple.startRippleMapAnimation();
+                    mapRippleFlag = true;
+                }
             }
         };
     }
@@ -158,6 +177,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onStop() {
         super.onStop();
         myFusedLocationProviderClient.removeLocationUpdates(locationCallback);
+        mapRipple.stopRippleMapAnimation();
     }
 
     //permission checker
@@ -230,7 +250,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             myFusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null);
             Log.d("Loc2", "requested");
             mapsActivityDatabaseRef.addChildEventListener(mapsActivityDatabaseLis);
+            mMap.setMinZoomPreference(18.0f);
+            mMap.setMaxZoomPreference(18.0f);
             mMap.setOnMarkerClickListener(this);
+
         }
         Log.d(TAG, "onMapReady: finish");
     }
@@ -315,6 +338,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public boolean onMarkerClick(final Marker marker) {
+        mapRipple.stopRippleMapAnimation();
         final stibbleMessage markerStibble = (stibbleMessage) marker.getTag();
         if (markerStibble != null) {
             String title = markerStibble.getTitle();
