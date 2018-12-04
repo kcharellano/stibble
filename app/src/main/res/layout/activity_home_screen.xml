@@ -11,6 +11,7 @@
 
 
     //android:background="#449ECC"
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -35,11 +36,11 @@
             android:layout_width="159dp"
             android:layout_height="149dp"
             android:layout_alignParentStart="true"
-            android:layout_marginStart="113dp"
+            android:layout_marginStart="112dp"
             android:layout_marginTop="44dp"
             android:background="@drawable/round_button"
             android:foregroundGravity="center"
-            android:gravity="center"
+
             app:srcCompat="@drawable/logo" />
 
 
@@ -49,7 +50,7 @@
             android:layout_height="59dp"
             android:layout_alignParentStart="true"
             android:layout_gravity="center"
-            android:layout_marginStart="59dp"
+            android:layout_marginStart="64dp"
             android:layout_marginTop="360dp"
             android:background="@drawable/round_button"
             android:drawableLeft="@drawable/ic_action_find2"
@@ -67,7 +68,7 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentBottom="true"
             android:layout_gravity="center"
-            android:layout_marginStart="59dp"
+            android:layout_marginStart="62dp"
             android:layout_marginTop="420dp"
             android:layout_marginBottom="34dp"
             android:background="@drawable/round_button"

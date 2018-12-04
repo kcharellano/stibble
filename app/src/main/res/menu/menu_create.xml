@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+    <item
+        android:id="@+id/goback"
+        android:icon="@drawable/ic_arrow_back_black_24dp"
+        android:title="done"
+        android:onClick="backButton"
+        app:showAsAction="always"/>
     <item
         android:id="@+id/message_save"
         android:icon="@drawable/ic_done_black_24dp"
@@ -13,6 +20,7 @@
         android:title="discard"
         android:onClick="discardMessage"
         app:showAsAction="always"/>
+
 
 
 </menu>

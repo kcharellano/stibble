@@ -46,12 +46,17 @@
 
     <EditText
         android:id="@+id/et_writeTitle"
-        android:layout_width="match_parent"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:textStyle="italic"
         android:inputType="textPersonName"
         android:hint="@string/et_wt_hint"
+        android:drawableStart="@drawable/ic_action_write"
         android:textSize="24sp"
-        android:backgroundTint="@android:color/holo_red_dark"
+        android:background="@drawable/round_editext"
+
         />
 
 
@@ -80,13 +85,17 @@
 
     <EditText
         android:id="@+id/et_writeMessage"
-        android:layout_width="match_parent"
-        android:layout_height="400dp"
-        android:background="@android:color/transparent"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:textColorHint="#908fbf"
+        android:background="@drawable/round_editext"
         android:gravity="top|start"
+        android:layout_gravity="center"
         android:hint="@string/et_wm_hint"
+        android:textAlignment="center"
         android:inputType="textMultiLine"
-        android:textSize="24sp" />
+
+        android:textSize="22sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -95,11 +104,15 @@
 
         <Button
             android:id="@+id/btn_place"
-            android:layout_width="wrap_content"
+            android:layout_width="141dp"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="235dp"
+            android:layout_marginTop="65dp"
+            android:textColor="#ffffff"
             android:layout_weight="1"
             android:onClick="placeMessage"
-            android:text="Place" />
+            android:background="@drawable/round_button"
+            android:text="Drop" />
     </LinearLayout>
 
 

@@ -3,6 +3,8 @@ package com.example.kevin.stibble;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -20,6 +22,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,6 +51,7 @@ public class CreateActivity extends AppCompatActivity implements NoticeDialogFra
     ChildEventListener createActivityDbListener;
     EditText wMessage, wTitle;
     TextView wMessageCount,wTitleCount;
+    Button placeBtn;
     int wMessageCursorPos;
     int wMessageMaxLength, wTitleMaxLength;
     String limitLineString = "";
@@ -63,6 +67,8 @@ public class CreateActivity extends AppCompatActivity implements NoticeDialogFra
         setContentView(R.layout.activity_create);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
+        perform_action(placeBtn);
+        Objects.requireNonNull(CreateActivity.this.getSupportActionBar()).setDisplayShowTitleEnabled(false);
         createActivityDatabaseRef = FirebaseDatabase.getInstance().getReference().getRoot().child("location"); /* */
         Log.d(TAG, "OnCreate: commence");
 
@@ -232,6 +238,7 @@ public class CreateActivity extends AppCompatActivity implements NoticeDialogFra
                 newMessage.setPlaceEpoch(System.currentTimeMillis());
                 newMessage.setExpireEpoch();
                 createActivityDatabaseRef.push().setValue(newMessage);
+                Toast.makeText(CreateActivity.this, "Message Placed", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(CreateActivity.this, HomeScreenActivity.class);
                 startActivity(intent);
             } catch (IOException e) {
@@ -278,6 +285,19 @@ public class CreateActivity extends AppCompatActivity implements NoticeDialogFra
         locObj.messenger = this;
         locObj.execute(this);
         Log.d(TAG, "getLoc2************");
+    }
+
+    public void backButton(MenuItem item) {
+        Intent intent = new Intent(CreateActivity.this, HomeScreenActivity.class);
+        startActivity(intent);
+    }
+
+    public void perform_action(View v){
+        Button btn3 = (Button) findViewById(R.id.btn_place);
+        int[] colors = {Color.parseColor("#614385"), Color.parseColor("#516395")};
+        GradientDrawable gd = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, colors);
+        gd.setCornerRadius(25f);
+        btn3.setBackground(gd);
     }
 }
 

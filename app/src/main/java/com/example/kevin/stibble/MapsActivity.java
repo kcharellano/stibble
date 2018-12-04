@@ -19,6 +19,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextClock;
@@ -390,9 +391,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 TextView ppExpire = (TextView) ppView.findViewById(R.id.popup_expire);
                 ppExpire.setText(expireEpoch);
                 //set buttons
-                Button closePopup = (Button) ppView.findViewById(R.id.close_popup);
-                Button incRating = (Button) ppView.findViewById(R.id.popup_uprating);
-                Button decRating = (Button) ppView.findViewById(R.id.popup_downrating);
+                ImageButton closePopup = (ImageButton) ppView.findViewById(R.id.close_popup);
+                ImageButton incRating = (ImageButton) ppView.findViewById(R.id.popup_uprating);
+                ImageButton decRating = (ImageButton) ppView.findViewById(R.id.popup_downrating);
                 //show the popup window
                 ppWindow.showAtLocation(ppView, Gravity.CENTER, 0, 0);
                 //button listeners

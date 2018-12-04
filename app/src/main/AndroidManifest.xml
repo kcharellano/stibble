@@ -12,10 +12,10 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -23,12 +23,14 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        tools:ignore="GoogleAppIndexingWarning"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-        >
+        tools:ignore="GoogleAppIndexingWarning">
 
         <!-- Main Activity -->
-        <activity android:name=".HomeScreenActivity">
+        <activity android:name=".HomeScreenActivity"
+            android:parentActivityName=".LoginActivity">
+        </activity>
+        <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -38,8 +40,9 @@
         <!-- Child of Main Activity -->
         <activity
             android:name=".CreateActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:parentActivityName=".HomeScreenActivity" />
+            android:label=""
+            android:parentActivityName=".HomeScreenActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -52,15 +55,16 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
-    <!--entered 11/6/2018-->
+        <!-- entered 11/6/2018 -->
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-    <!---->
+        <!--  -->
         <activity
             android:name=".MapsActivity"
-            android:parentActivityName=".HomeScreenActivity"
-            android:label="@string/title_activity_maps" />
+            android:label="@string/title_activity_maps"
+            android:parentActivityName=".HomeScreenActivity" />
+
     </application>
 
 </manifest>
