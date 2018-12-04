@@ -29,15 +29,52 @@
         android:textSize="14sp"
         android:textColor="#000"
         android:text="BODY"/>
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/popup_rating"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        android:layout_gravity="end"
-        android:textColor="#000"
-        android:text="Rate"/>
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/ni2"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_weight="1"
+            android:gravity=""
+            android:textColor="#000"
+            android:text="Rating:"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/popup_rating"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="#e70a0a"
+            android:layout_weight="1"
+            android:text="R"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/ni1"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_weight="1"
+            android:gravity=""
+            android:textColor="#000"
+            android:text="Expires:"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/popup_expire"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:textColor="#e70a0a"
+            android:text="D"/>
+
+    </LinearLayout>
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

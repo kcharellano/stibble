@@ -45,6 +45,12 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.Locale;
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener{
 
     //constants
@@ -57,6 +63,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public boolean myLocationPermissionGranted = false;
     public Location holdLocation;
     private GoogleMap mMap;
+    private LinkedList<Marker> markerLinkedList;
     public  LocationRequest locationRequest;
     public FusedLocationProviderClient myFusedLocationProviderClient;
     LocationCallback locationCallback;
@@ -82,12 +89,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 if(addedMessage!= null) {
                     String str = dataSnapshot.getKey();
                     addedMessage.setKey(str);
-                    Log.d("temp", str);
+                    /*
+                    float[] results = new float[1];
+                    //Location.distanceBetween(holdLocation.getLatitude(), holdLocation.getLongitude(), addedMessage.getLatitude(), addedMessage.getLongtitude(), results);
+                    float distance = results[0];
+                    Log.d("distance", String.valueOf(distance));
+                    */
                     LatLng mlatlng = new LatLng(addedMessage.getLatitude(), addedMessage.getLongtitude());
-                    MarkerOptions options = new MarkerOptions()
-                            .position(mlatlng)
-                            .title(addedMessage.getTitle())
-                            .snippet(addedMessage.getMessage());
+                    //make marker invisible
+                    //MarkerOptions options = new MarkerOptions().visible(false);
+                    //create marker object
+                    //Marker marker = mMap.addMarker(options);
+                    //
+                    //marker.setTag(addedMessage);
+                    MarkerOptions options = new MarkerOptions().position(mlatlng);
                     mMap.addMarker(options).setTag(addedMessage);
                     Log.d(TAG, "onCreate:onChildAdded: Finish");
                 }
@@ -100,17 +115,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Log.d("dbRef", "onChildChanges");
+                Log.d("luk", "onChildChanges");
             }
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                Log.d("dbRef", "onChildRemoved");
+                Log.d("luk", "onChildRemoved");
             }
 
             @Override
             public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Log.d("dbRef", "onChildMoved");
+                Log.d("luk", "onChildMoved");
             }
 
             @Override
@@ -123,6 +138,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     protected void onStart() {
         super.onStart();
+        markerLinkedList = new LinkedList<Marker>();
         locationRequest = new LocationRequest();
         locationRequest.setInterval(2000);
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
@@ -132,8 +148,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onLocationResult(LocationResult locationResult) {
                 Log.d("Loc2", "updated");
                 holdLocation = locationResult.getLastLocation();
-                String k = "latitude = "+holdLocation.getLatitude()+"\n longitude = "+holdLocation.getLongitude();
-                Toast.makeText(MapsActivity.this, k, Toast.LENGTH_SHORT).show();
+                //String k = "latitude = "+holdLocation.getLatitude()+"\n longitude = "+holdLocation.getLongitude();
+                //Toast.makeText(MapsActivity.this, k, Toast.LENGTH_SHORT).show();
+
             }
         };
     }
@@ -210,9 +227,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 return;
             }
             mMap.setMyLocationEnabled(true);
-            mapsActivityDatabaseRef.addChildEventListener(mapsActivityDatabaseLis);
             myFusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null);
             Log.d("Loc2", "requested");
+            mapsActivityDatabaseRef.addChildEventListener(mapsActivityDatabaseLis);
             mMap.setOnMarkerClickListener(this);
         }
         Log.d(TAG, "onMapReady: finish");
@@ -304,6 +321,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             String message = markerStibble.getMessage();
             final Long longRating = markerStibble.getRating();
             String rating = longRating.toString();
+            Long expEpoch = markerStibble.getExpireEpoch();
+            SimpleDateFormat dayTime = new SimpleDateFormat("MM/dd/yy", Locale.US);
+            String expireEpoch = dayTime.format(new Date(expEpoch));
             Toast.makeText(MapsActivity.this, "CLICK", Toast.LENGTH_SHORT).show();
             //create inflater for popup layout
             LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
@@ -324,6 +344,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 //set rating
                 final TextView ppRating = (TextView) ppView.findViewById(R.id.popup_rating);
                 ppRating.setText(rating);
+                //set expire date
+                TextView ppExpire = (TextView) ppView.findViewById(R.id.popup_expire);
+                ppExpire.setText(expireEpoch);
                 //set buttons
                 Button closePopup = (Button) ppView.findViewById(R.id.close_popup);
                 Button incRating = (Button) ppView.findViewById(R.id.popup_uprating);
@@ -372,8 +395,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return false;
     }
 
-    public void showLocation(View view) {
 
+    public void showLocation(View view) {
         double lat = holdLocation.getLatitude();
         double lon = holdLocation.getLongitude();
         Toast.makeText(this, "latitude = "+lat+"\n"+"longitude = "+lon, Toast.LENGTH_LONG).show();

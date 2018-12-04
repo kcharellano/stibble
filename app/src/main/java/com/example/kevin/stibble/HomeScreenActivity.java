@@ -38,12 +38,14 @@ public class HomeScreenActivity extends AppCompatActivity {
     Button createBtn; //declare create button globally
     DatabaseReference HomeActivityDatabaseRef; /* */
     ChildEventListener HomeActivityDbListener;
+    FusedLocationProviderClient fusedLocationProviderClient;
     Button findBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         HomeActivityDatabaseRef = FirebaseDatabase.getInstance().getReference(); /* */
         if (isServicesOk()) {
             findInit();

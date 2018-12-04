@@ -229,6 +229,8 @@ public class CreateActivity extends AppCompatActivity implements NoticeDialogFra
                 newMessage.setState(holdAddress.getAdminArea());
                 newMessage.setCountry(holdAddress.getCountryName());
                 newMessage.setPostalCode(holdAddress.getPostalCode());
+                newMessage.setPlaceEpoch(System.currentTimeMillis());
+                newMessage.setExpireEpoch();
                 createActivityDatabaseRef.push().setValue(newMessage);
                 Intent intent = new Intent(CreateActivity.this, HomeScreenActivity.class);
                 startActivity(intent);
