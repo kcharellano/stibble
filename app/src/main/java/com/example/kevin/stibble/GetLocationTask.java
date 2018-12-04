@@ -48,9 +48,9 @@ public class GetLocationTask extends AsyncTask<Activity, Void, Void> {
         getLocationPermission(ctx, activity);
         Log.d(TAG, "doInBackground: about to run returnDeviceAddress()");
         //gets device location from inner class via callback
-        returnDeviceAddress(ctx, new LocationCallback() {
+        returnDeviceAddress(ctx, new StibCallback() {
             @Override
-            public void onLocation(Location location) {
+            public void receivedLoc(Location location) {
                 Log.d(TAG, "onLocation: callback");
                 holdLocation = location;
                 //sends location to parent activity via GetLocationTaskResponse interface
@@ -62,7 +62,7 @@ public class GetLocationTask extends AsyncTask<Activity, Void, Void> {
 
 
 
-    private void returnDeviceAddress(final Context context, final LocationCallback callback)
+    private void returnDeviceAddress(final Context context, final StibCallback callback)
     {
         //get location
         myFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context);
@@ -77,7 +77,7 @@ public class GetLocationTask extends AsyncTask<Activity, Void, Void> {
                                                            Location curLocation = (Location) task.getResult();
                                                            if (curLocation != null) {
                                                                Log.d(TAG, "returnDeviceAddress: onComplete: starting callback");
-                                                               callback.onLocation(curLocation);
+                                                               callback.receivedLoc(curLocation);
                                                            } else {
                                                                Log.d(TAG, "returnDeviceAddress: onComplete: current location is null");
                                                            }

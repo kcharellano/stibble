@@ -1,9 +1,12 @@
 package com.example.kevin.stibble;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,11 +16,20 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class HomeScreenActivity extends AppCompatActivity {
 
@@ -29,12 +41,11 @@ public class HomeScreenActivity extends AppCompatActivity {
     Button findBtn;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
         HomeActivityDatabaseRef = FirebaseDatabase.getInstance().getReference(); /* */
-        if(isServicesOk()) {
+        if (isServicesOk()) {
             findInit();
         }
         createBtn = (Button) findViewById(R.id.create_button); //instantiate & bind to xml button
@@ -77,6 +88,13 @@ public class HomeScreenActivity extends AppCompatActivity {
             }
         };
         HomeActivityDatabaseRef.addChildEventListener(HomeActivityDbListener);
+        Long time = System.currentTimeMillis();
+        SimpleDateFormat dayTime = new SimpleDateFormat("dd/MM/yy", Locale.US);
+        String str = dayTime.format(new Date(time));
+        String str2 = time.toString();
+        Log.d("home", str);
+        Log.d("home", str2);
+
     }
 
     //method for checking correct gmap version

@@ -5,6 +5,8 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -23,9 +25,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationAvailability;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -38,12 +45,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.LongToIntFunction;
-
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener{
 
     //constants
@@ -51,12 +52,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     public static final String COURSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
     public static final int LOCATION_PERMISSION_REQUEST_CODE = 123;
-    public static final float DEFAULT_ZOOM = 10;
+    public static final float DEFAULT_ZOOM = 18.85f;
     //variables
     public boolean myLocationPermissionGranted = false;
     public Location holdLocation;
     private GoogleMap mMap;
+    public  LocationRequest locationRequest;
     public FusedLocationProviderClient myFusedLocationProviderClient;
+    LocationCallback locationCallback;
     DatabaseReference mapsActivityDatabaseRef;
     ChildEventListener mapsActivityDatabaseLis;
 
@@ -117,6 +120,29 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         };
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        locationRequest = new LocationRequest();
+        locationRequest.setInterval(2000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest.setFastestInterval(1000);
+        locationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                Log.d("Loc2", "updated");
+                holdLocation = locationResult.getLastLocation();
+                String k = "latitude = "+holdLocation.getLatitude()+"\n longitude = "+holdLocation.getLongitude();
+                Toast.makeText(MapsActivity.this, k, Toast.LENGTH_SHORT).show();
+            }
+        };
+    }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        myFusedLocationProviderClient.removeLocationUpdates(locationCallback);
+    }
+
     //permission checker
     //calls initMap()
     public void getLocationPermission()
@@ -175,12 +201,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Toast.makeText(this, "Map is Ready", Toast.LENGTH_SHORT).show();
         mMap = googleMap;
         if (myLocationPermissionGranted) {
-            getDeviceLocation(new LocationCallback() {
-                @Override
-                public void onLocation(Location location) {
-                    holdLocation = location;
-                }
-            });
+            getDeviceLocation();
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                     != PackageManager.PERMISSION_GRANTED &&
                     ActivityCompat.checkSelfPermission
@@ -189,7 +210,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 return;
             }
             mMap.setMyLocationEnabled(true);
-           mapsActivityDatabaseRef.addChildEventListener(mapsActivityDatabaseLis);
+            mapsActivityDatabaseRef.addChildEventListener(mapsActivityDatabaseLis);
+            myFusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null);
+            Log.d("Loc2", "requested");
             mMap.setOnMarkerClickListener(this);
         }
         Log.d(TAG, "onMapReady: finish");
@@ -221,7 +244,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     //gets device location and moves camera to current location
-    public void getDeviceLocation(final LocationCallback callback)
+    public void getDeviceLocation()
     {
         Log.d(TAG, "getDeviceLocation: start");
         //get location
@@ -241,7 +264,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             //move camera to location
                             if (curLocation != null) {
                                 moveCamera(new LatLng(curLocation.getLatitude(), curLocation.getLongitude()), DEFAULT_ZOOM);
-                                callback.onLocation(curLocation);
                             }
                             else
                             {
@@ -351,14 +373,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void showLocation(View view) {
-        Geocoder geocoder = new Geocoder(this);
-        List<Address> addressList = null;
-        try {
-            addressList = geocoder.getFromLocation(holdLocation.getLatitude(), holdLocation.getLongitude(), 1);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Address holdAddress = addressList != null ? addressList.get(0) : null;
-        Toast.makeText(this, holdAddress != null ? holdAddress.toString() : null, Toast.LENGTH_SHORT).show();
+
+        double lat = holdLocation.getLatitude();
+        double lon = holdLocation.getLongitude();
+        Toast.makeText(this, "latitude = "+lat+"\n"+"longitude = "+lon, Toast.LENGTH_LONG).show();
     }
+
 }
