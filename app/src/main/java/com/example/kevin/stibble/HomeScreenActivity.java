@@ -153,5 +153,4 @@ public class HomeScreenActivity extends AppCompatActivity {
         btn.setBackground(gd);
         btn2.setBackground(gd);
     }
-
 }

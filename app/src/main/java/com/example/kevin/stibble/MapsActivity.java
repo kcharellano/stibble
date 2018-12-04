@@ -93,21 +93,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 if(addedMessage!= null) {
                     String str = dataSnapshot.getKey();
                     addedMessage.setKey(str);
-                    /*
-                    float[] results = new float[1];
-                    //Location.distanceBetween(holdLocation.getLatitude(), holdLocation.getLongitude(), addedMessage.getLatitude(), addedMessage.getLongtitude(), results);
-                    float distance = results[0];
-                    Log.d("distance", String.valueOf(distance));
-                    */
+
                     LatLng mlatlng = new LatLng(addedMessage.getLatitude(), addedMessage.getLongtitude());
                     //make marker invisible
-                    //MarkerOptions options = new MarkerOptions().visible(false);
+                    MarkerOptions options = new MarkerOptions().visible(false).position(mlatlng);
                     //create marker object
-                    //Marker marker = mMap.addMarker(options);
-                    //
-                    //marker.setTag(addedMessage);
-                    MarkerOptions options = new MarkerOptions().position(mlatlng);
-                    mMap.addMarker(options).setTag(addedMessage);
+                    Marker marker = mMap.addMarker(options);
+                    //add object to marker
+                    marker.setTag(addedMessage);
+                    //appends to markerLinkedList
+                    markerLinkedList.add(marker);
+                    //mMap.addMarker(options).setTag(addedMessage);
                     Log.d(TAG, "onCreate:onChildAdded: Finish");
                 }
                 else
@@ -143,11 +139,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onStart() {
         super.onStart();
         mapRippleFlag = false;
-        markerLinkedList = new LinkedList<Marker>();
+        markerLinkedList = new LinkedList<>();
         locationRequest = new LocationRequest();
-        locationRequest.setInterval(2000);
+        locationRequest.setInterval(7000);
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setFastestInterval(1000);
+        locationRequest.setFastestInterval(5000);
         locationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
@@ -155,7 +151,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 holdLocation = locationResult.getLastLocation();
                 //String k = "latitude = "+holdLocation.getLatitude()+"\n longitude = "+holdLocation.getLongitude();
                 //Toast.makeText(MapsActivity.this, k, Toast.LENGTH_SHORT).show();
-
+                for (Marker marker : markerLinkedList) {
+                    stibbleMessage marker_stib = (stibbleMessage) marker.getTag();
+                    if(marker_stib!=null) {
+                        float[] results = new float[1];
+                        Location.distanceBetween(holdLocation.getLatitude(), holdLocation.getLongitude(), marker_stib.getLatitude(), marker_stib.getLongtitude(), results);
+                        float distance = results[0];
+                        if(distance < 70)
+                        {
+                            marker.setVisible(true);
+                        }
+                        else
+                        {
+                            marker.setVisible(false);
+                        }
+                        Log.d("distance", String.valueOf(distance));
+                    }
+                }
                 if(!mapRippleFlag)
                 {
                     LatLng latLng = new LatLng(holdLocation.getLatitude(), holdLocation.getLongitude());
@@ -163,13 +175,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     mapRipple.withNumberOfRipples(3);
                     mapRipple.withFillColor(ContextCompat.getColor(MapsActivity.this, R.color.darkGreen));
                     mapRipple.withStrokeColor(Color.BLACK);
-                    mapRipple.withStrokewidth(5);
-                    mapRipple.withDistance(150);
+                    mapRipple.withStrokewidth(0);
+                    mapRipple.withDistance(60);
                     mapRipple.withRippleDuration(6000);
                     mapRipple.withTransparency(0.3f);
                     mapRipple.startRippleMapAnimation();
                     mapRippleFlag = true;
                 }
+                mapRipple.withLatLng(new LatLng(locationResult.getLastLocation().getLatitude(), locationResult.getLastLocation().getLongitude()));
             }
         };
     }
@@ -250,8 +263,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             myFusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null);
             Log.d("Loc2", "requested");
             mapsActivityDatabaseRef.addChildEventListener(mapsActivityDatabaseLis);
-            mMap.setMinZoomPreference(18.0f);
-            mMap.setMaxZoomPreference(18.0f);
+            //mMap.setMinZoomPreference(18.5f);
+            //mMap.setMaxZoomPreference(18.0f);
             mMap.setOnMarkerClickListener(this);
 
         }
@@ -382,6 +395,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     @Override
                     public void onClick(View v) {
                         ppWindow.dismiss();
+                        mapRipple.startRippleMapAnimation();
                     }
                 });
                 incRating.setOnClickListener(new View.OnClickListener() {
