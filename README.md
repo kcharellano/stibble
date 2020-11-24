@@ -19,15 +19,15 @@ Stibble attempts to mimic this functionality by allowing users to write messages
 ## Screenshots
 Writing a message:
 
-![](./images/stibble_write.png)
+![](./images/stibble_write.PNG)
 
 How surrounding messages appear when scanning map:
 
-![](./images/stibble_radar.png)
+![](./images/stibble_radar.PNG)
 
 How messages appear when clicked on:
 
-![](./images/stibble_message.png)
+![](./images/stibble_message.PNG)
 
 ## Setup
 To manually install app follow instructions given [here](https://developer.android.com/training/basics/firstapp/running-app)
