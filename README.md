@@ -8,7 +8,7 @@
 * [Setup](#setup)
 * [Contact](#contact)
 
-## Motivitation
+## Motivation
 The motivation behind this app was to replicate [Orange Guidance Soapstone messages](https://darksouls.fandom.com/wiki/Messages) as they work in the popular action role playing game [dark souls](https://en.wikipedia.org/wiki/Dark_Souls). 
 
 In the game, players can leave short messages anywhere on the ground and they appear when another player gets close enough to the location where the messages was written.
